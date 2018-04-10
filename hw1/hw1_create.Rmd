@@ -61,18 +61,23 @@ crimes.final <- crimes.sub[as.character(crimes.sub$Primary.Type) %in% keep_cats,
 crimes.final$Primary.Type <- factor(crimes.final$Primary.Type, levels = keep_cats)
 ```
 
-
+```{r calc_props}
+df_crimes$prop <- df_crimes$num_rows / sum(df_crimes$num_rows)
+df_crimes.sub <- df_crimes[as.character(df_crimes$Primary.Type) %in% keep_cats, ]
+df_crimes.sub$Primary.Type <- factor(df_crimes.sub$Primary.Type, levels = keep_cats)
+df_crimes.sub <- df_crimes.sub[ order(-df_crimes.sub[3]), ]
+```
 
 
 ```{r viz}
 
 
 leg_labels <- tools::toTitleCase(sapply(keep_cats, tolower,USE.NAMES = FALSE))
+count.2017 <- nrow(crimes.sub)
 
-
-ggplot(crimes.final,aes(Primary.Type)) + geom_bar(aes(fill=Primary.Type)) +
+ggplot(df_crimes.sub,aes(Primary.Type,prop)) + geom_bar(stat='identity',aes(fill=Primary.Type)) +
       theme(legend.position = 'bottom',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1)) +
-      scale_fill_brewer(palette = "Paired", labels=leg_labels)
+      scale_fill_brewer(palette = "Paired", labels=leg_labels) + scale_y_continuous(labels = scales::percent_format())
 
 ```
 
