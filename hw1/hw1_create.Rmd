@@ -95,13 +95,14 @@ df.crimes.sub
 ```
 
 ```{r viz2}
-ggplot(df.crimes.sub,aes(Primary.Type,prop,Arrest)) + geom_bar(stat='identity',aes(fill=Primary.Type,alpha=Arrest))+#,color=Arrest)) +
-      theme(legend.position = 'none',legend.title = element_blank(),#panel.border = element_rect(linetype="solid",color='transparent', fill=NA, size=1.1),
+ggplot(df.crimes.sub,aes(Primary.Type,prop,Arrest)) + geom_bar(stat='identity',aes(alpha=Arrest,fill=Primary.Type))+#,color=Arrest)) +
+      theme(legend.position='bottom',legend.title = element_blank(),#panel.border = element_rect(linetype="solid",color='transparent', fill=NA, size=1.1),
             plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),axis.title.x=element_blank(),
-            panel.background = element_blank(),panel.grid.major.y=element_line(colour='black'),panel.grid.major.x=element_blank()) +
-      scale_fill_brewer(palette='Paired') +
-      scale_alpha_discrete(range = c(.6,1)) + 
+            panel.background = element_blank(),panel.grid.major.y=element_line(colour='grey50',size=.25),panel.grid.major.x=element_blank(),
+            axis.ticks=element_blank()) +
+      labs(y='Proportion of Total Reported Crimes',title='Most Commonly Reported Types of Crime in Chicago, 2017') +
+      scale_fill_brewer(palette='Paired',guide=FALSE) + guides(fill=FALSE) +
+      scale_alpha_discrete(range = c(.4,1)) + 
       scale_y_continuous(labels = scales::percent_format(),limits=c(0,.25)) +
-      scale_x_discrete(labels=leg_labels) +
-      labs(y='Proportion of Total Reported Crimes',title='Most Commonly Reported Types of Crime in Chicago, 2017')
+      scale_x_discrete(labels=leg_labels)
 ```
