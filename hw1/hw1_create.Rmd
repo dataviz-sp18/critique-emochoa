@@ -6,9 +6,9 @@ output: github_document
 ---
 
 ```{r setup}
+library(dplyr)
 library(ggplot2)
-#library(foreign)
-library(lubridate)
+theme_set(theme_grey())
 ```
 
 
@@ -27,14 +27,48 @@ head(crimes)
 ```
 
 ```{r subset, eval=FALSE}
-keep <- c('Year','Date','FBI.Code','IUCR','Primary.Type','Description','Arrest','Domestic','Community.Area')
+keep <- c('Year','Primary.Type','Arrest','Domestic','Community.Area')
 crimes.sub <- crimes[,keep]
 crimes.sub <- crimes.sub[(crimes.sub$Year < 2018), ]
+write.csv(crimes.sub,'/Users/erin/Google Drive/School/2018 Spring/Data Viz/Assignments/HW1/crimes_sub.csv',row.names = FALSE)
 rm(crimes)
 ```
 
+```{r subset2}
+crimes.sub <- crimes.sub[(crimes.sub$Year == 2017), ]
+```
 
 ```{r transform}
+
+
 cats <- levels(crimes.sub$Primary.Type)
+cats
 ```
+
+
+```{r subset3}
+crimes.sub %>% 
+  group_by(Primary.Type) %>%
+  summarise(num_rows = length(Primary.Type)) %>%
+  data.frame() -> df_crimes
+
+#Keep the 10 most common crimes (excluding the nebulous 'Other Offense' category)
+keep_cats <- df_crimes[ order(-df_crimes[2]), ]
+keep_cats <- unlist(list(as.character(keep_cats[(1:11), "Primary.Type"])))
+keep_cats <- keep_cats[keep_cats != 'OTHER OFFENSE']
+
+crimes.final <- crimes.sub[as.character(crimes.sub$Primary.Type) %in% keep_cats, ]
+```
+
+
+
+
+```{r viz}
+leg_labels <- tools::toTitleCase(sapply(keep_cats, tolower,USE.NAMES = FALSE))
+
+ggplot(crimes.final,aes(Primary.Type)) + geom_bar(aes(fill=Primary.Type)) +
+      theme(legend.position = 'bottom',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1))
+
+```
+
 
