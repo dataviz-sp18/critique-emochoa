@@ -38,12 +38,6 @@ rm(crimes)
 crimes.sub <- crimes.sub[(crimes.sub$Year == 2017), ]
 ```
 
-```{r transform}
-
-
-cats <- levels(crimes.sub$Primary.Type)
-cats
-```
 
 
 ```{r subset3}
@@ -69,16 +63,45 @@ df_crimes.sub <- df_crimes.sub[ order(-df_crimes.sub[3]), ]
 ```
 
 
-```{r viz}
-
-
+```{r labs}
 leg_labels <- tools::toTitleCase(sapply(keep_cats, tolower,USE.NAMES = FALSE))
-count.2017 <- nrow(crimes.sub)
+leg_labels <- gsub(" ", "\n", leg_labels, perl=TRUE)
+```
 
+```{r viz}
 ggplot(df_crimes.sub,aes(Primary.Type,prop)) + geom_bar(stat='identity',aes(fill=Primary.Type)) +
-      theme(legend.position = 'bottom',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1)) +
-      scale_fill_brewer(palette = "Paired", labels=leg_labels) + scale_y_continuous(labels = scales::percent_format())
+      theme(legend.position = 'none',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1),
+            plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),axis.title.x=element_blank()) +
+      scale_fill_brewer(palette = "Paired") +
+      scale_y_continuous(labels = scales::percent_format()) +
+      scale_x_discrete(labels=leg_labels) +
+      labs(y='Proportion of Total Reported Crimes',title='Most Commonly Reported Types of Crime in Chicago, 2017')
 
 ```
 
+```{r arrests_calc}
+#Get prop of each type and arrest status
+crimes.sub %>% 
+  group_by(Primary.Type,Arrest) %>%
+  summarise(num_rows = length(Primary.Type)) %>%
+  data.frame() -> df.crimes
 
+df.crimes$prop <- df.crimes$num_rows / sum(df.crimes$num_rows)
+df.crimes.sub <- df.crimes[as.character(df.crimes$Primary.Type) %in% keep_cats, ]
+df.crimes.sub$Primary.Type <- factor(df.crimes.sub$Primary.Type, levels = keep_cats)
+df.crimes.sub <- df.crimes.sub[ order(-df.crimes.sub[3]), ]
+
+df.crimes.sub
+```
+
+```{r viz2}
+ggplot(df.crimes.sub,aes(Primary.Type,prop,Arrest)) + geom_bar(stat='identity',aes(fill=Primary.Type,alpha=Arrest))+#,color=Arrest)) +
+      theme(legend.position = 'none',legend.title = element_blank(),#panel.border = element_rect(linetype="solid",color='transparent', fill=NA, size=1.1),
+            plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),axis.title.x=element_blank(),
+            panel.background = element_blank(),panel.grid.major.y=element_line(colour='black'),panel.grid.major.x=element_blank()) +
+      scale_fill_brewer(palette='Paired') +
+      scale_alpha_discrete(range = c(.6,1)) + 
+      scale_y_continuous(labels = scales::percent_format(),limits=c(0,.25)) +
+      scale_x_discrete(labels=leg_labels) +
+      labs(y='Proportion of Total Reported Crimes',title='Most Commonly Reported Types of Crime in Chicago, 2017')
+```
