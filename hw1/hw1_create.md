@@ -1,31 +1,26 @@
----
-title: "Assignment 1, Create"
-author: "Erin M. Ochoa"
-date: "2018/04/10"
-output: github_document
----
+Assignment 1, Create
+================
+Erin M. Ochoa
+2018/04/10
 
-```{r setup,results='hide',message=FALSE,warning=FALSE}
+``` r
 library(dplyr)
 library(ggplot2)
 theme_set(theme_grey())
 ```
 
-
-
-```{r load, eval=FALSE}
+``` r
 #Downloaded from:
 #https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present-Dashboard/5cd6-ry5g
 crimes <- read.csv('~/Google Drive/School/2018 Spring/Data Viz/Assignments/HW1/Crimes_-_2001_to_present.csv')
 ```
 
-
-```{r inspect, eval=FALSE}
+``` r
 names(crimes)
 head(crimes)
 ```
 
-```{r subset, eval=FALSE}
+``` r
 keep <- c('Year','Primary.Type','Arrest','Domestic','Community.Area')
 crimes.sub <- crimes[,keep]
 crimes.sub <- crimes.sub[(crimes.sub$Year < 2018), ]
@@ -34,18 +29,15 @@ write.csv(crimes.sub,'~/Google Drive/School/2018 Spring/Data Viz/Assignments/HW1
 rm(crimes)
 ```
 
-
-```{r fakeread}
+``` r
 crimes.sub <- read.csv('~/Google Drive/School/2018 Spring/Data Viz/Assignments/HW1/crimes_sub.csv')
 ```
 
-```{r subset2}
+``` r
 crimes.sub <- crimes.sub[(crimes.sub$Year == 2017), ]
 ```
 
-
-
-```{r subset3}
+``` r
 crimes.sub %>% 
   group_by(Primary.Type) %>%
   summarise(num_rows = length(Primary.Type)) %>%
@@ -60,20 +52,19 @@ crimes.final <- crimes.sub[as.character(crimes.sub$Primary.Type) %in% keep_cats,
 crimes.final$Primary.Type <- factor(crimes.final$Primary.Type, levels = keep_cats)
 ```
 
-```{r calc_props}
+``` r
 df_crimes$prop <- df_crimes$num_rows / sum(df_crimes$num_rows)
 df_crimes.sub <- df_crimes[as.character(df_crimes$Primary.Type) %in% keep_cats, ]
 df_crimes.sub$Primary.Type <- factor(df_crimes.sub$Primary.Type, levels = keep_cats)
 df_crimes.sub <- df_crimes.sub[ order(-df_crimes.sub[3]), ]
 ```
 
-
-```{r labs}
+``` r
 leg_labels <- tools::toTitleCase(sapply(keep_cats, tolower,USE.NAMES = FALSE))
 leg_labels <- gsub(" ", "\n", leg_labels, perl=TRUE)
 ```
 
-```{r viz}
+``` r
 ggplot(df_crimes.sub,aes(Primary.Type,prop)) + geom_bar(stat='identity',aes(fill=Primary.Type)) +
       theme(legend.position = 'none',legend.title = element_blank(),
             panel.border = element_rect(linetype = "solid",
@@ -85,10 +76,11 @@ ggplot(df_crimes.sub,aes(Primary.Type,prop)) + geom_bar(stat='identity',aes(fill
       scale_x_discrete(labels=leg_labels) +
       labs(y='Proportion of Total Reported Crimes',
            title='Most Commonly Reported Types of Crime in Chicago, 2017')
-
 ```
 
-```{r arrests_calc}
+![](hw1_create_files/figure-markdown_github/viz-1.png)
+
+``` r
 #Get prop of each type and arrest status
 crimes.sub %>% 
   group_by(Primary.Type,Arrest) %>%
@@ -101,7 +93,7 @@ df.crimes.sub$Primary.Type <- factor(df.crimes.sub$Primary.Type, levels = keep_c
 df.crimes.sub <- df.crimes.sub[ order(-df.crimes.sub[3]), ]
 ```
 
-```{r viz2}
+``` r
 ggplot(df.crimes.sub,aes(Primary.Type,prop,Arrest)) +
       geom_bar(stat='identity',aes(alpha=Arrest,fill=Primary.Type)) +
       theme(legend.position='bottom',legend.title=element_blank(),
@@ -119,3 +111,5 @@ ggplot(df.crimes.sub,aes(Primary.Type,prop,Arrest)) +
       scale_y_continuous(labels=scales::percent_format(),limits=c(0,.25)) +
       scale_x_discrete(labels=leg_labels)
 ```
+
+![](hw1_create_files/figure-markdown_github/viz2-1.png)
