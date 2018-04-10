@@ -58,16 +58,21 @@ keep_cats <- unlist(list(as.character(keep_cats[(1:11), "Primary.Type"])))
 keep_cats <- keep_cats[keep_cats != 'OTHER OFFENSE']
 
 crimes.final <- crimes.sub[as.character(crimes.sub$Primary.Type) %in% keep_cats, ]
+crimes.final$Primary.Type <- factor(crimes.final$Primary.Type, levels = keep_cats)
 ```
 
 
 
 
 ```{r viz}
+
+
 leg_labels <- tools::toTitleCase(sapply(keep_cats, tolower,USE.NAMES = FALSE))
 
+
 ggplot(crimes.final,aes(Primary.Type)) + geom_bar(aes(fill=Primary.Type)) +
-      theme(legend.position = 'bottom',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1))
+      theme(legend.position = 'bottom',legend.title = element_blank(),panel.border = element_rect(linetype = "solid", color = "grey70", fill=NA, size=1.1)) +
+      scale_fill_brewer(palette = "Paired", labels=leg_labels)
 
 ```
 
