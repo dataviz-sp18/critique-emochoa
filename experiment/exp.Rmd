@@ -1,0 +1,297 @@
+---
+title: 'Data Visualization Experiment'
+author: 'Reid McIlroy-Young & Erin M. Ochoa'
+date: '2018/05/04'
+class: 'Data Visualization'
+professor: 'Dr. Soltoff'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(RColorBrewer)
+```
+
+```{r read_shapefile}
+#Shapefile from http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_state_500k.zip
+
+fname <- '/Users/erin/Google Drive/School/2018 Spring/Data Viz/Assignments/Experiment/shapefiles/continental/continental.shp'
+map.states <- rgdal::readOGR(fname)
+#names are c('STATEFP','STATENS','AFFGEOID','GEOID','STUSPS','NAME','ALAND','AWATER','X','Y')
+```
+```{r gen_rain}
+#Gen fake data
+#rain <- rnorm(49,mean=50,sd=25)
+
+
+rain.paste <- read.csv(text='Rain
+47.532297
+44.788493
+48.032562
+27.569972
+103.994310
+93.165790
+44.225660
+40.711207
+50.185936
+47.466576
+59.183470
+17.216597
+29.918428
+69.896669
+45.009813
+33.215083
+92.823391
+34.702318
+56.621792
+31.596587
+63.991607
+80.468367
+74.914520
+65.547100
+49.115225
+55.016351
+34.486952
+54.181907
+85.232651
+43.907535
+22.403860
+49.283209
+75.108596
+14.399393
+36.886016
+25.575468
+8.691386
+15.296616
+55.680036
+70.938990
+54.857576
+20.407020
+44.987434
+40.940877
+50.790558
+17.464371
+54.811742
+53.322739
+41.927154')$Rain
+
+
+```
+
+```{r rain_labels}
+#Make labels for the states we want to highlight
+rainfall.labels <- as.data.frame(map.states@data)
+rainfall.labels <- subset(rainfall.labels,select=c('NAME','X','Y'))
+rainfall.labels$Label <- as.character(rainfall.labels$NAME)
+rainfall.labels$Label[!(rainfall.labels$NAME %in% c('Kentucky','Virginia'))] <- ''
+
+#rain.2 <- sample(rain)
+```
+
+```{r viz_rainfall}
+#View all palettes
+#RColorBrewer::display.brewer.all()
+rain.bins = seq(min(rain.paste),max(rain.paste),by=((max(rain.paste) - min(rain.paste)) / 7 ))
+rain.pal <- colorBin('Blues', domain = rain.paste, bins = rain.bins)
+
+leaflet(map.states,option=leafletOptions(zoomControl=FALSE,minZoom=4, maxZoom=4)) %>%
+        addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+        addPolygons(color = 'black', weight = 1, smoothFactor = 1,
+                    opacity = 1.0, fillOpacity = 0.6,
+                    fillColor = ~rain.pal(rain.paste)
+                    ) %>%
+        addLabelOnlyMarkers(data=rainfall.labels,lng = ~X-.29, lat = ~Y -.83, label = ~Label,
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
+                                                style = list('font-size' = '11px'))) %>%
+        addLegend(pal=rain.pal, values=rain.paste, opacity = 0.7, title = NULL,position='bottomright') %>%
+        setView(-98.5795,39.8283,zoom=4)
+```
+
+```{r gen_pizza}
+#Gen fake data
+#pizza <- rnorm(49,mean=50,sd=20)
+
+pizza.paste <- read.csv(text='Pizza
+36.83541
+52.71581
+31.40205
+76.85189
+78.71583
+37.48947
+51.19893
+54.04586
+36.44532
+56.73061
+49.88417
+58.86691
+54.01391
+30.19477
+65.01396
+45.62594
+65.95597
+24.76586
+24.59778
+41.94818
+24.55147
+46.73831
+47.16523
+55.73473
+71.22328
+47.62370
+55.91363
+39.71145
+29.04257
+63.08353
+35.06904
+49.19388
+37.01555
+62.66923
+10.40778
+41.36434
+45.76690
+59.60449
+82.61523
+50.32738
+43.00453
+47.64108
+42.35014
+39.33839
+51.14431
+42.99347
+56.83981
+50.59049
+54.76303')$Pizza
+```
+
+```{r pizza_labels}
+#Make labels for the states we want to highlight
+pizza.labels <- as.data.frame(map.states@data)
+pizza.labels <- subset(pizza.labels,select=c('NAME','X','Y'))
+pizza.labels$Label <- as.character(pizza.labels$NAME)
+pizza.labels$Label[!(pizza.labels$NAME %in% c('Missouri','North Dakota'))] <- ''
+pizza.labels$X[pizza.labels$NAME == 'North Dakota'] <- (-97.79683 - 2.75) #Nudge label to the west
+pizza.labels$Y[pizza.labels$NAME == 'Missouri'] <- (38.36827 - 1.2) #Nudge label to the south
+
+#pizza.paste <- sample(pizza)
+```
+
+
+
+
+```{r viz_pizza}
+#View all palettes
+#RColorBrewer::display.brewer.all()
+pizza.bins = seq(min(pizza.paste),max(pizza.paste),by=((max(pizza.paste) - min(pizza.paste)) / 4 ))
+pizza.pal <- colorBin('Reds', domain = pizza.paste, bins = pizza.bins)
+
+leaflet(map.states,option=leafletOptions(zoomControl=FALSE,minZoom=4, maxZoom=4)) %>%
+        addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+        addPolygons(color = 'black', weight = 1, smoothFactor = 1,
+                    opacity = 1.0, fillOpacity = 0.6,
+                    fillColor = ~pizza.pal(pizza.paste)
+                    ) %>%
+        addLabelOnlyMarkers(data=pizza.labels,lng = ~X, lat = ~Y, label = ~Label,
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
+                                                style = list('font-size' = '11px'))) %>%
+        addLegend(pal=pizza.pal, values=pizza.paste, opacity = 0.8, title = NULL,position='bottomright') %>%
+        setView(-98.5795,39.8283,zoom=4)
+```
+
+
+```{r gen_murder}
+#Gen fake data
+#murder <- rnorm(49,mean=80,sd=50)
+
+murder.paste <- read.csv(text='HomRate
+47.8779329
+75.2144382
+118.6759532
+106.1226950
+91.8302262
+81.4063636
+34.6640039
+88.5053802
+40.1986872
+112.5659719
+34.7734446
+85.7489243
+12.5787785
+31.8959645
+41.4511628
+81.7651988
+90.7281331
+106.4460777
+42.7640693
+79.0809534
+126.7167404
+0.0320609
+63.5406350
+38.1681157
+26.7904812
+151.2070693
+61.8333364
+148.7976847
+23.8060523
+120.1683386
+86.8851094
+148.3032168
+101.1378307
+121.6719459
+31.8467089
+90.4212143
+119.3664338
+88.2632625
+203.3797013
+48.8413305
+49.1869919
+75.4969611
+67.0206662
+29.2466898
+76.8025254
+131.2062138
+137.1169062
+82.3152956
+9.9849614')$HomRate
+```
+
+
+
+
+
+
+
+
+
+```{r murder_labels}
+#Make labels for the states we want to highlight
+murder.labels <- as.data.frame(map.states@data)
+murder.labels <- subset(murder.labels,select=c('NAME','X','Y'))
+murder.labels$Label <- as.character(murder.labels$NAME)
+murder.labels$Label[!(murder.labels$NAME %in% c('Kansas','Utah'))]<- ''
+murder.labels$X[murder.labels$NAME == 'Kansas'] <- (-96.95857 - 1.5) #Nudge label to the west
+
+
+#rain.2 <- sample(rain)
+```
+
+
+
+
+
+```{r viz_murder}
+#View all palettes
+#RColorBrewer::display.brewer.all()
+murder.bins = seq(min(murder.paste),max(murder.paste),by=((max(murder.paste) - min(murder.paste)) / 8 ))
+murder.pal <- colorBin('Greens', domain = murder.paste, bins = murder.bins)
+
+leaflet(map.states,option=leafletOptions(zoomControl=FALSE,minZoom=4, maxZoom=4)) %>%
+        addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+        addPolygons(color = 'black', weight = 1, smoothFactor = 1,
+                    opacity = 1.0, fillOpacity = 0.6,
+                    fillColor = ~murder.pal(murder.paste)
+                    ) %>%
+        addLabelOnlyMarkers(data=murder.labels,lng = ~X, lat = ~Y-.75, label = ~Label,
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
+                                                style = list('font-size' = '11px'))) %>%
+        addLegend(pal=murder.pal, values=murder.paste, opacity = 0.8, title = NULL,position='bottomright') %>%
+        setView(-95,39.8283,zoom=4)
+```
