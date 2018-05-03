@@ -7,7 +7,7 @@ professor: 'Dr. Soltoff'
 output: github_document
 ---
 
-# Part II:  Critique
+# Part I:  Critique
 
 Consider a visualization of "'The Office' Characters' Most Distinguishing Words", found at [Reddit](https://www.reddit.com/r/dataisbeautiful/comments/8a4gbr/the_office_characters_most_distinguishing_words_oc/) and attributed to [/u/RyBread7](https://www.reddit.com/user/RyBread7)):
 ![](https://i.redd.it/3k2o82q966q01.png)
