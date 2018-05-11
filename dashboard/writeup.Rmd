@@ -1,0 +1,12 @@
+---
+title: "Dashboard Write-up"
+author: "Erin M. Ochoa"
+date: "2018/05/18"
+class: 'Data Visualization'
+professor: 'Dr. Soltoff'
+output: github_document
+---
+
+```{r setup}
+
+```
