@@ -15,28 +15,9 @@ library(jsonlite)
 library(RColorBrewer)
 
 ui <- fluidPage(
-   
-   # Application title
-   titlePanel('Violence by Climate Zone'),
-   
-   # Sidebar with a slider input for number of bins 
+   titlePanel('Violence: The Role of Disadvantage by Climate Zone'),
    sidebarLayout(
-     # Show a plot of the generated distribution
      mainPanel(
-       #fluidRow(column(4, verbatimTextOutput("value"))),
-       #one <- 1,
-       #plotchoice <- switch(as.character(verbatimTextOutput("value")),
-        #                    '1' = 'map.zones',
-         #                   '2' = 'map.m0',
-          #                  '3' = 'map.m3',
-           #                 '4' = 'map.m4'),
-       #cat(plotchoice),
-       #fluidRow(column(4, verbatimTextOutput("value")))#,
-       #leafletOutput(plotchoice)
-       #leafletOutput('map.zones'),
-       #leafletOutput('map.m0'),
-       #leafletOutput('map.m3'),
-       #leafletOutput('map.m4')
        conditionalPanel(condition = "input.radio == '1'",
                         leafletOutput('map.zones')),
        conditionalPanel(condition = "input.radio == '2'",
@@ -44,19 +25,22 @@ ui <- fluidPage(
        conditionalPanel(condition = "input.radio == '3'",
                         leafletOutput('map.m3')),
        conditionalPanel(condition = "input.radio == '4'",
-                        leafletOutput('map.m4'))
+                        leafletOutput('map.m4')),
+       conditionalPanel(condition = "input.radio == '5'",
+                        leafletOutput('map.m4.int')),
+       conditionalPanel(condition = "input.radio == '6'",
+                        leafletOutput('map.m5')),
+       conditionalPanel(condition = "input.radio == '7'",
+                        leafletOutput('map.m6')),
+       conditionalPanel(condition = "input.radio == '8'",
+                        leafletOutput('map.m7'))
      ),
-     
       sidebarPanel(
-      #   sliderInput("bins",
-       #              "Number of bins:",
-        #             min = 1,
-         #            max = 50,
-          #           value = 30)
-        
         radioButtons('radio', label = h3('Choose Model'),
-                     choices = list('Climate Zones' = 1, 'Base Model' = 2, 'Model 3: Climate Zone' = 3, 'Model 4: Climate Zone' = 4), 
-                     selected = 2)#,
+                     choices = list('Climate Zones' = 1, 'Base Model (no covariates)' = 2, 'Model 3: Climate Zone' = 3, 'Model 4: Climate Zone' = 4,
+                                    'Model 4: Climate Zone x Disadvantage' = 5,'Model 5: OLS by Regimes (Disadvantage)' = 6,
+                                    'Model 6: Spatial Lag by Regimes (Disadvantage)' = 7, 'Model 7: Spatial Error by Regimes (Disadvantage)' = 8), 
+                     selected = 1)#,
         #hr(),
         #fluidRow(column(4, verbatimTextOutput("value")))
       )
@@ -79,6 +63,18 @@ server <- function(input, output) {
   m4.bins.zone = c(-Inf,-.640,-.228,-.038,0.0001,.236,.646,Inf)
   m4.pal.zone <- colorBin('RdBu', domain = zones$Coef4Z, bins = m4.bins.zone, reverse=TRUE)
   
+  m4.bins.int = c(-Inf,-.236,-.059,0,0.001,0.3,0.620,Inf)
+  m4.pal.int <- colorBin('RdBu', domain = zones$Coef4Int, bins = m4.bins.int, reverse=TRUE)
+  
+  m5.bins <- seq(min(zones$Coef5D),max(zones$Coef5D),by=(max(zones$Coef5D) - min(zones$Coef5D))/7)
+  m5.pal <- colorBin('YlOrRd', domain = zones$Coef5D, bins = m5.bins, reverse=TRUE)
+  
+  m6.bins <- seq(min(zones$Coef6D),max(zones$Coef6D),by=(max(zones$Coef6D) - min(zones$Coef6D))/7)
+  m6.pal <- colorBin('YlOrRd', domain = zones$Coef6D, bins = m6.bins, reverse=TRUE)
+  
+  m7.bins <- seq(min(zones$Coef7D),max(zones$Coef7D),by=(max(zones$Coef7D) - min(zones$Coef7D))/7)
+  m7.pal <- colorBin('YlOrRd', domain = zones$Coef7D, bins = m7.bins, reverse=TRUE)
+  
   base.labels <- sprintf(
     "<strong>%s</strong><br/>",
     zones$Name
@@ -97,6 +93,26 @@ server <- function(input, output) {
   m4.labels <- sprintf(
     "<strong>%s</strong><br/>Model 4 Zone Coefficient:  %g",
     zones$Name, zones$Coef4Z
+  ) %>% lapply(htmltools::HTML)
+  
+  m4.int.labels <- sprintf(
+    "<strong>%s</strong><br/>Model 4 Zone x Disadvantage Coefficient:  %g",
+    zones$Name, zones$Coef4Int
+  ) %>% lapply(htmltools::HTML)
+  
+  m5.labels <- sprintf(
+    "<strong>%s</strong><br/>Model 5 (OLS by Regimes) Disadvantage Coefficient:  %g",
+    zones$Name, zones$Coef5D
+  ) %>% lapply(htmltools::HTML)
+  
+  m6.labels <- sprintf(
+    "<strong>%s</strong><br/>Model 6 (Spatial Lag by Regimes) Disadvantage Coefficient:  %g",
+    zones$Name, zones$Coef6D
+  ) %>% lapply(htmltools::HTML)
+  
+  m7.labels <- sprintf(
+    "<strong>%s</strong><br/>Model 7 (Spatial Error by Regimes) Disadvantage Coefficient:  %g",
+    zones$Name, zones$Coef7D
   ) %>% lapply(htmltools::HTML)
   
   hopts <- highlightOptions(weight = 4,
@@ -122,18 +138,49 @@ server <- function(input, output) {
   output$map.m0 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m0.pal(zones$Coef0Z),
                                                                 highlight = hopts,
                                                                 label = m0.labels,
-                                                                labelOptions = lopts)})
+                                                                labelOptions = lopts) %>%
+                                                addLegend(pal=m0.pal, values=~zones$Coef0Z, opacity = 0.7, title = NULL,position='bottomright')})
 
   output$map.m3 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m3.pal(zones$Coef3Z),
                                                             highlight = hopts,
                                                             label = m3.labels,
-                                                            labelOptions = lopts)})
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m3.pal, values=~zones$Coef3Z, opacity = 0.7, title = NULL,position='bottomright')})
   
   output$map.m4 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                             fillColor = ~m4.pal.zone(zones$Coef4Z),
                                                             highlight = hopts,
                                                             label = m4.labels,
-                                                            labelOptions = lopts)})
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m4.pal.zone, values=~zones$Coef4Z, opacity = 0.7, title = NULL,position='bottomright')})
+  
+  output$map.m4.int <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                                fillColor = ~m4.pal.int(zones$Coef4Int),
+                                                                highlight = hopts,
+                                                                label = m4.int.labels,
+                                                                labelOptions = lopts) %>%
+                                                    addLegend(pal=m4.pal.int, values=~zones$Coef4Int, opacity = 0.7, title = NULL,position='bottomright')})
+  
+  output$map.m5 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m5.pal(zones$Coef5D),
+                                                            highlight = hopts,
+                                                            label = m5.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m5.pal, values=~zones$Coef5D, opacity = 0.7, title = NULL,position='bottomright')})
+  
+  output$map.m6 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m6.pal(zones$Coef6D),
+                                                            highlight = hopts,
+                                                            label = m6.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m6.pal, values=~zones$Coef6D, opacity = 0.7, title = NULL,position='bottomright')})
+  
+  output$map.m7 <- renderLeaflet({zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m7.pal(zones$Coef7D),
+                                                            highlight = hopts,
+                                                            label = m7.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m7.pal, values=~zones$Coef7D, opacity = 0.7, title = NULL,position='bottomright')})
 }
 
 # Run the application 
