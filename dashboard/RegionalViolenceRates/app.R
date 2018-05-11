@@ -14,7 +14,6 @@ library(leaflet)
 library(jsonlite)
 library(RColorBrewer)
 
-# Define UI for application that draws a histogram
 ui <- fluidPage(
    
    # Application title
@@ -24,10 +23,28 @@ ui <- fluidPage(
    sidebarLayout(
      # Show a plot of the generated distribution
      mainPanel(
-       leafletOutput('map.zones'),
-       leafletOutput('map.m0'),
-       leafletOutput('map.m3'),
-       leafletOutput('map.m4')
+       #fluidRow(column(4, verbatimTextOutput("value"))),
+       #one <- 1,
+       #plotchoice <- switch(as.character(verbatimTextOutput("value")),
+        #                    '1' = 'map.zones',
+         #                   '2' = 'map.m0',
+          #                  '3' = 'map.m3',
+           #                 '4' = 'map.m4'),
+       #cat(plotchoice),
+       #fluidRow(column(4, verbatimTextOutput("value")))#,
+       #leafletOutput(plotchoice)
+       #leafletOutput('map.zones'),
+       #leafletOutput('map.m0'),
+       #leafletOutput('map.m3'),
+       #leafletOutput('map.m4')
+       conditionalPanel(condition = "input.radio == '1'",
+                        leafletOutput('map.zones')),
+       conditionalPanel(condition = "input.radio == '2'",
+                        leafletOutput('map.m0')),
+       conditionalPanel(condition = "input.radio == '3'",
+                        leafletOutput('map.m3')),
+       conditionalPanel(condition = "input.radio == '4'",
+                        leafletOutput('map.m4'))
      ),
      
       sidebarPanel(
@@ -36,15 +53,21 @@ ui <- fluidPage(
         #             min = 1,
          #            max = 50,
           #           value = 30)
+        
+        radioButtons('radio', label = h3('Choose Model'),
+                     choices = list('Climate Zones' = 1, 'Base Model' = 2, 'Model 3: Climate Zone' = 3, 'Model 4: Climate Zone' = 4), 
+                     selected = 2)#,
+        #hr(),
+        #fluidRow(column(4, verbatimTextOutput("value")))
       )
-      
-
    )
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
 
+  #output$value <- renderPrint({ input$radio })
+  #output$value <- 1
+  
   zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_integer64_policy = TRUE)
   
   m0.bins = c(-Inf,-6.0,-1.5,-.0001,0.0001,1.5,6.0,Inf)
@@ -112,20 +135,6 @@ server <- function(input, output) {
                                                             label = m4.labels,
                                                             labelOptions = lopts)})
 }
-
-
-
-
-
-leaflet(map34,option=leafletOptions(zoomControl=FALSE,minZoom=4, maxZoom=4)) %>%
-  addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
-  addPolygons(color = 'black', weight = 1, smoothFactor = 1,
-              opacity = 1.0, fillOpacity = 0.6,
-              fillColor = ~dums.pal(zones$Coef0Z))
-
-
-
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
