@@ -12,39 +12,101 @@ library(rgdal)
 library(shiny)
 library(leaflet)
 library(jsonlite)
+library(htmltools)
 library(RColorBrewer)
 
+
+
+
 ui <- fluidPage(
-   titlePanel('Violence: The Role of Disadvantage by Climate Zone'),
-   sidebarLayout(
-     mainPanel(
-       conditionalPanel(condition = "input.radio == '1'",
-                        leafletOutput('map.zones')),
-       conditionalPanel(condition = "input.radio == '2'",
-                        leafletOutput('map.m0')),
-       conditionalPanel(condition = "input.radio == '3'",
-                        leafletOutput('map.m3')),
-       conditionalPanel(condition = "input.radio == '4'",
-                        leafletOutput('map.m4')),
-       conditionalPanel(condition = "input.radio == '5'",
-                        leafletOutput('map.m4.int')),
-       conditionalPanel(condition = "input.radio == '6'",
-                        leafletOutput('map.m5')),
-       conditionalPanel(condition = "input.radio == '7'",
-                        leafletOutput('map.m6')),
-       conditionalPanel(condition = "input.radio == '8'",
-                        leafletOutput('map.m7'))
-     ),
-      sidebarPanel(
-        radioButtons('radio', label = h3('Choose Model'),
-                     choices = list('Climate Zones' = 1, 'Base Model (no covariates)' = 2, 'Model 3: Climate Zone' = 3, 'Model 4: Climate Zone' = 4,
-                                    'Model 4: Climate Zone x Disadvantage' = 5,'Model 5: OLS by Regimes (Disadvantage)' = 6,
-                                    'Model 6: Spatial Lag by Regimes (Disadvantage)' = 7, 'Model 7: Spatial Error by Regimes (Disadvantage)' = 8), 
-                     selected = 1)#,
-        #hr(),
-        #fluidRow(column(4, verbatimTextOutput("value")))
-      )
-   )
+  titlePanel('Violence: The Role of Disadvantage by Climate Zone'),
+  tabsetPanel(
+    tabPanel('1',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title1')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('2',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title2')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('3',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title3')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('4',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title4')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('5',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title5')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('6',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title6')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('7',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title7')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('8',fluid=TRUE,
+             sidebarLayout(
+               mainPanel(
+                 htmlOutput('title8')
+               ),
+               sidebarPanel()
+             )),
+    tabPanel('Explore', fluid = TRUE,
+             sidebarLayout(
+               mainPanel(
+                 conditionalPanel(condition = "input.radio == '1'",
+                                  leafletOutput('map.zones')),
+                 conditionalPanel(condition = "input.radio == '2'",
+                                  leafletOutput('map.m0')),
+                 conditionalPanel(condition = "input.radio == '3'",
+                                  leafletOutput('map.m3')),
+                 conditionalPanel(condition = "input.radio == '4'",
+                                  leafletOutput('map.m4')),
+                 conditionalPanel(condition = "input.radio == '5'",
+                                  leafletOutput('map.m4.int')),
+                 conditionalPanel(condition = "input.radio == '6'",
+                                  leafletOutput('map.m5')),
+                 conditionalPanel(condition = "input.radio == '7'",
+                                  leafletOutput('map.m6')),
+                 conditionalPanel(condition = "input.radio == '8'",
+                                  leafletOutput('map.m7'))
+               ),
+               sidebarPanel(
+                 radioButtons('radio', label = h3('Choose Map'),
+                              choices = list('Climate Zones' = 1, 'Base Model (no covariates)' = 2, 'Model A: Climate Zone' = 3, 'Model B: Climate Zone' = 4,
+                                             'Model B: Climate Zone x Disadvantage' = 5,'Model C: OLS by Regimes (Disadvantage)' = 6,
+                                             'Model D: Spatial Lag by Regimes (Disadvantage)' = 7, 'Model E: Spatial Error by Regimes (Disadvantage)' = 8), 
+                              selected = 1)
+               )
+             )
+    )
+  )
 )
 
 server <- function(input, output) {
@@ -78,42 +140,42 @@ server <- function(input, output) {
   base.labels <- sprintf(
     "<strong>%s</strong><br/>",
     zones$Name
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m0.labels <- sprintf(
     "<strong>%s</strong><br/>Base Model Coefficient:  %g",
     zones$Name, zones$Coef0Z
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m3.labels <- sprintf(
     "<strong>%s</strong><br/>Model 3 Zone Coefficient:  %g",
     zones$Name, zones$Coef3Z
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m4.labels <- sprintf(
     "<strong>%s</strong><br/>Model 4 Zone Coefficient:  %g",
     zones$Name, zones$Coef4Z
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m4.int.labels <- sprintf(
     "<strong>%s</strong><br/>Model 4 Zone x Disadvantage Coefficient:  %g",
     zones$Name, zones$Coef4Int
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m5.labels <- sprintf(
     "<strong>%s</strong><br/>Model 5 (OLS by Regimes) Disadvantage Coefficient:  %g",
     zones$Name, zones$Coef5D
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m6.labels <- sprintf(
     "<strong>%s</strong><br/>Model 6 (Spatial Lag by Regimes) Disadvantage Coefficient:  %g",
     zones$Name, zones$Coef6D
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   m7.labels <- sprintf(
     "<strong>%s</strong><br/>Model 7 (Spatial Error by Regimes) Disadvantage Coefficient:  %g",
     zones$Name, zones$Coef7D
-  ) %>% lapply(htmltools::HTML)
+  ) %>% lapply(HTML)
   
   hopts <- highlightOptions(weight = 4,
                          color = "#555555",
@@ -181,6 +243,18 @@ server <- function(input, output) {
                                                             label = m7.labels,
                                                             labelOptions = lopts) %>%
                                                 addLegend(pal=m7.pal, values=~zones$Coef7D, opacity = 0.7, title = NULL,position='bottomright')})
+
+  output$text.0 <- renderUI({sprintf("<br><p align='center'>This is some text.")%>% lapply(HTML)})
+  
+  output$title1 <- renderUI({sprintf("<br><b>1. Introduction</b><br><hr>")%>% lapply(HTML)})
+  output$title2 <- renderUI({sprintf("<br><b>2. Climate Zones</b><br><hr>")%>% lapply(HTML)})
+  output$title3 <- renderUI({sprintf("<br><b>3. Violence Rate by Region</b><br><hr>")%>% lapply(HTML)})
+  output$title4 <- renderUI({sprintf("<br><b>4. Model A: Climate Zone</b><br><hr>")%>% lapply(HTML)})
+  output$title5 <- renderUI({sprintf("<br><b>5. Model B: Climate Zone x Disadvantage</b><br><hr>")%>% lapply(HTML)})
+  output$title6 <- renderUI({sprintf("<br><b>6. Model C: OLS by Region</b><br><hr>")%>% lapply(HTML)})
+  output$title7 <- renderUI({sprintf("<br><b>7. Model D: Spatial Lag by Region</b><br><hr>")%>% lapply(HTML)})
+  output$title8 <- renderUI({sprintf("<br><b>8. Model E: Spatial Error by Region</b><br><hr>")%>% lapply(HTML)})
+    
 }
 
 # Run the application 
