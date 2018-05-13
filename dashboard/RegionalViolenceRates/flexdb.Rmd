@@ -1,13 +1,13 @@
 ---
 title: 'Violence: The Role of Disadvantage by Climate Zone'
 author: 'Erin M. Ochoa'
-date: '2018/05/18'
+date: '2018 May 18'
 class: 'Data Visualization'
 professor: 'Dr. Soltoff'
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
-    theme: spacelab
+    theme: cerulean
 ---
 
 ```{r setup}
@@ -94,38 +94,49 @@ hopts <- highlightOptions(weight = 4,
 lopts <- labelOptions(style = list("font-weight" = "normal"),
                       textsize = "15px",direction = "auto",opacity=1)
 
-zones.map <- leaflet(zones,option=leafletOptions(zoomControl=FALSE,minZoom=4, maxZoom=4)) %>%
+zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, maxZoom=5)) %>%
                addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
                addLabelOnlyMarkers(lng = ~Lon, lat = ~Lat, label = ~as.character(zone),
                                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
                                                   style = list("font-size" = "14px")))
 ```
 
-### Introduction {data-commentary-width=400}
+### Introduction {data-commentary-width=450}
 
-```{r frame1}
-
-```
+<p align=center><font size=3>
+Figure 1: Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
+(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).</font><br><br>
+![](data/hr90_EBS_cropped.png){width=1000px}
+</p>
 
 *** 
+<p align=justify><font size=4>
+<b>Violence rates are higher in the South.</b><br><br>
+Historically, criminologists have turned to the idea of a <i>Southern subculture of violence</i> to explain this disparity.<br><br>
+But culture isn't the only factor that varies regionally:  the <b>climate</b> does, too.</font></p>
 
-<b>Intro text goes here.</b><br>  Figure should be the homicide-rate-by-county map.
-
-### Climate Regions {data-commentary-width=400}
-
+### Climate Regions {data-commentary-width=450}
+<p align=center><font size=3>
+Figure 2: Climate regions (Ochoa 2018) constructed from thirty years of climate data (<a href=http://doi.org/10.7289/V5PN93JP>Arguez et al. 2010</a>); this shows only the climate regions where the sampled tracts are located.</font><br>
 ```{r frame2}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~Color,
                                                                highlight = hopts,
                                                                label = base.labels,
                                                                labelOptions = lopts)
 ```
-
+</p>
 *** 
 
-Map of the fourteen climate zones in which there are observations.
+<p align=justify><font size=4>
+<b>Climate varies by region.</b><br><br>
+This map of distinct climate regions (Ochoa 2018) is constructed from thirty years of climate data (<a href=http://doi.org/10.7289/V5PN93JP>Arguez et al. 2010</a>).<br><br>
+The National Neighborhood Crime Study (<a href=>Peterson & Krivo 2010</a>) contains data for all Census tracts in a sample of cities.<br><br>
+The tracts with data for violent crime rate (averaged over 1999-2001) are located in fourteen climate regions, as shown in Figure 2.
+</font></p>
 
-### Raw Violence Rates {data-commentary-width=400}
-
+### Raw Violence Rates {data-commentary-width=450}
+<p align=center><font size=3>
+Figure 3: </font><br>
 ```{r frame3}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m0.pal(zones$Coef0Z),
                                                                 highlight = hopts,
@@ -133,12 +144,16 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
                                                                 labelOptions = lopts) %>%
                                                 addLegend(pal=m0.pal, values=~zones$Coef0Z, opacity = 0.7, title = NULL,position='bottomright')
 ```
-
+</p>
 *** 
-
-text
-
-### Model A: Climate Zone {data-commentary-width=400}
+<p align=justify><font size=4>
+<b>Violence rates vary by climate region.</b><br><br>
+Figure 3 shows the climate-region coefficient, relative to region 1 (Great Lakes, in white), for the violent crime rate of the sampled tracts in each region.<br><br>
+Note that tracts in some Southern regions (like 6, 11, and 18) have higher violence rates on average than tracts in the Great Lakes region, but tracts in other Southern regions (like 8, 10, and 14) have lower violence rates.<br><br>
+This shows that the South is <i>not homogeneous</i>: there is variability across climate regions within the South.<br><br>
+Also note that tracts in region 3 have higher violence rates on average than those in the Great Lakes region. 
+</font></p>
+### Model A: Climate Zone {data-commentary-width=450}
 
 ```{r frame4}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m3.pal(zones$Coef3Z),
@@ -152,7 +167,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 Text
 
-### Model B: Climate Zone (when Disadvantage  = 0) {data-commentary-width=400}
+### Model B: Climate Zone (when Disadvantage  = 0) {data-commentary-width=450}
 
 ```{r frame5}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -167,7 +182,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 Text
 
-### Model B: Climate Zone x Disadvantage {data-commentary-width=400}
+### Model B: Climate Zone x Disadvantage {data-commentary-width=450}
 
 ```{r frame6}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -182,7 +197,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 Text
 
-### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=400}
+### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame7}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -197,7 +212,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 Text
 
-### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=400}
+### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame8}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -212,7 +227,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 Text
 
-### Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=400}
+### Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame9}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
