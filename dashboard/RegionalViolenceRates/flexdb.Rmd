@@ -23,7 +23,6 @@ counties <- readOGR('/Users/erin/Google Drive/School/Thesis/Climate change & wea
 zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_integer64_policy = TRUE)
 ```
 
-
 ```{r prepare_components}
 m0.bins = c(-Inf,-6.0,-1.5,-.0001,0.0001,1.5,6.0,Inf)
 m0.pal <- colorBin('RdBu', domain = zones$Coef0Z, bins = m0.bins, reverse=TRUE)
@@ -100,6 +99,12 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
                addLabelOnlyMarkers(lng = ~Lon, lat = ~Lat, label = ~as.character(zone),
                                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
                                                   style = list("font-size" = "14px")))
+```
+
+```{r filter_spatial_models}
+zones$Coef5D[!zones$zone%in%c(8,14,20)] <- NA
+zones$Coef6D[!zones$zone%in%c(2,3,5,7,18)] <- NA
+zones$Coef7D[!zones$zone%in%c(1,6,7,10,11,12,13)] <- NA
 ```
 
 ### Introduction {data-commentary-width=450}
@@ -220,16 +225,18 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
                                                                 labelOptions = lopts) %>%
                                                     addLegend(pal=m4.pal.int, values=~zones$Coef4Int, opacity = 0.7, title = NULL,position='bottomright')
 ```
-
+</p>
 ***
 <p align=justify><font size=4>
 <b>Climate moderates the relationship between disadvantage and violence.</b><br><br>
-<br><br>
+Figure 6 shows that the regional climate changes the relationship between disadvantage and violent crime rate.<br><br>
+For tracts in regions 2, 3, 5, and 6, disadvantage is associated with high levels of violence; for regions 7, 10, 13, 14, 18, disadvantage is associated with lower levels of violence compared to region 1.<br><br>
 The results indicate that no matter the climate, disadvantage is positively related to violent crime, though the size of the effect varies by climate region.
 </font></p>
 
 ### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
-
+<p align=center><font size=3>
+Figure 7. Model C: Coefficient for disadvantage, regimes regression, for violent crime rate of the sampled tracts in each region.</font><br>
 ```{r frame7}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                             fillColor = ~m5.pal(zones$Coef5D),
@@ -238,10 +245,12 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
                                                             labelOptions = lopts) %>%
                                                 addLegend(pal=m5.pal, values=~zones$Coef5D, opacity = 0.7, title = NULL,position='bottomright')
 ```
-
+</p>
 *** 
+<p align=justify><font size=4>
+<b>Disadvantage drives violent crime for tracts in some Southern subregions.</b><br><br>
 
-Text
+</font></p>
 
 ### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
 
