@@ -104,8 +104,8 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
 ### Introduction {data-commentary-width=450}
 
 <p align=center><font size=3>
-Figure 1: Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
-(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).</font><br><br>
+Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
+(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).</font><br>
 ![](data/hr90_EBS_cropped.png){width=1000px}
 </p>
 
@@ -113,11 +113,11 @@ Figure 1: Homicide rate per 100,000 persons by county, 1990, with Empirical Baye
 <p align=justify><font size=4>
 <b>Violence rates are higher in the South.</b><br><br>
 Historically, criminologists have turned to the idea of a <i>Southern subculture of violence</i> to explain this disparity.<br><br>
-But culture isn't the only factor that varies regionally:  the <b>climate</b> does, too.</font></p>
+But culture isn't the only factor that varies regionally: the <u>climate</u> does, too.</font></p>
 
 ### Climate Regions {data-commentary-width=450}
 <p align=center><font size=3>
-Figure 2: Climate regions (Ochoa 2018) constructed from thirty years of climate data (<a href=http://doi.org/10.7289/V5PN93JP>Arguez et al. 2010</a>); this shows only the climate regions where the sampled tracts are located.</font><br>
+Figure 2. Climate regions where sampled tracts are located.</font><br>
 ```{r frame2}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~Color,
                                                                highlight = hopts,
@@ -136,7 +136,7 @@ The tracts with data for violent crime rate (averaged over 1999-2001) are locate
 
 ### Raw Violence Rates {data-commentary-width=450}
 <p align=center><font size=3>
-Figure 3: </font><br>
+Figure 3. Climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region.</font><br>
 ```{r frame3}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m0.pal(zones$Coef0Z),
                                                                 highlight = hopts,
@@ -150,11 +150,12 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <b>Violence rates vary by climate region.</b><br><br>
 Figure 3 shows the climate-region coefficient, relative to region 1 (Great Lakes, in white), for the violent crime rate of the sampled tracts in each region.<br><br>
 Note that tracts in some Southern regions (like 6, 11, and 18) have higher violence rates on average than tracts in the Great Lakes region, but tracts in other Southern regions (like 8, 10, and 14) have lower violence rates.<br><br>
-This shows that the South is <i>not homogeneous</i>: there is variability across climate regions within the South.<br><br>
+This shows that the South is <u>not homogeneous</u>: there is variability across climate regions within the South.<br><br>
 Also note that tracts in region 3 have higher violence rates on average than those in the Great Lakes region. 
 </font></p>
 ### Model A: Climate Zone {data-commentary-width=450}
-
+<p align=center><font size=3>
+Figure 4. Model A: Climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region.</font><br>
 ```{r frame4}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m3.pal(zones$Coef3Z),
                                                             highlight = hopts,
@@ -162,10 +163,15 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
                                                             labelOptions = lopts) %>%
                                                 addLegend(pal=m3.pal, values=~zones$Coef3Z, opacity = 0.7, title = NULL,position='bottomright')
 ```
-
-*** 
-
-Text
+</p>
+***
+<p align=justify><font size=4>
+<b>Controlling for theoretically and empirically indicated covariates changes the association between climate and violence.</b><br><br>
+Figure 4 shows the climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region after controlling for tract- and city-level covariates.<br><br>
+This shows that once such conditions are taken into account, there are tracts in areas of the South that have low levels of violence (like in regions 8, 10, and 14) and tracts in areas outside the South that have high levels of violence (like in regions 5 and 12).<br><br>
+<u>Tract-level covariates</u>: <ul><li>Residential Instability</li> <li>Immigrant Prevalence</li> <li>Disadvantage</li> <li>Males Aged 15-34</li> <li>Percent Minority</li></ul><br>
+<u>City-level covariates</u>: <ul><li>Segregation</li><li>Disadvantage</li><li>Manufacturing Jobs</li><li>Population</li><li>Percent Minority</li><li>Percent Recent Movers</li><li>Percent Foreign-Born</li><li>Males Aged 15-34</li></ul>
+</font></p>
 
 ### Model B: Climate Zone (when Disadvantage  = 0) {data-commentary-width=450}
 
