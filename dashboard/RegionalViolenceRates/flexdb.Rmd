@@ -52,9 +52,9 @@ zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_int
 ```
 
 ```{r filter_spatial_models}
-zones$M5Dis[!zones$zone%in%c(8,14,20)] <- NA
-zones$M6Dis[!zones$zone%in%c(2,3,5,7,18)] <- NA
-zones$M7Dis[!zones$zone%in%c(1,6,7,10,11,12,13)] <- NA
+zones@data[!zones$zone%in%c(8,14,20),10:15] <- NA
+zones@data[!zones$zone%in%c(2,3,5,7,18),16:22] <- NA
+zones@data[!zones$zone%in%c(1,6,7,10,11,12,13),23:29] <- NA
 ```
 
 ```{r build_palettes}
@@ -69,15 +69,18 @@ m4.pal.zone <- colorBin('RdBu', domain = zones$M4Z, bins = m4.bins.zone, reverse
 
 m4.bins.int = c(-Inf,-.236,-.059,0,0.001,0.3,0.620,Inf)
 m4.pal.int <- colorBin('RdBu', domain = zones$M4ZxD, bins = m4.bins.int, reverse=TRUE)
+
+m5.int.bins <- seq(min(na.omit(zones$M5Int)),max(na.omit(zones$M5Int)),by=(max(na.omit(zones$M5Int)) - min(na.omit(zones$M5Int)))/7)
+m5.int.pal <- colorBin('YlOrRd', domain = zones$M5Int, bins = m5.int.bins, reverse=FALSE)
   
-m5.bins <- seq(min(na.omit(zones$M5Dis)),max(na.omit(zones$M5Dis)),by=(max(na.omit(zones$M5Dis)) - min(na.omit(zones$M5Dis)))/7)
-m5.pal <- colorBin('YlOrRd', domain = zones$M5Dis, bins = m5.bins, reverse=FALSE)
+m5.dis.bins <- seq(min(na.omit(zones$M5Dis)),max(na.omit(zones$M5Dis)),by=(max(na.omit(zones$M5Dis)) - min(na.omit(zones$M5Dis)))/7)
+m5.dis.pal <- colorBin('YlOrRd', domain = zones$M5Dis, bins = m5.dis.bins, reverse=FALSE)
 
-m6.bins <- seq(min(na.omit(zones$M6Dis)),max(na.omit(zones$M6Dis)),by=(max(na.omit(zones$M6Dis)) - min(na.omit(zones$M6Dis)))/7)
-m6.pal <- colorBin('YlOrRd', domain = zones$M6Dis, bins = m6.bins, reverse=FALSE)
+m6.dis.bins <- seq(min(na.omit(zones$M6Dis)),max(na.omit(zones$M6Dis)),by=(max(na.omit(zones$M6Dis)) - min(na.omit(zones$M6Dis)))/7)
+m6.dis.pal <- colorBin('YlOrRd', domain = zones$M6Dis, bins = m6.dis.bins, reverse=FALSE)
 
-m7.bins <- seq(min(na.omit(zones$M7Dis)),max(na.omit(zones$M7Dis)),by=(max(na.omit(zones$M7Dis)) - min(na.omit(zones$M7Dis)))/7)
-m7.pal <- colorBin('YlOrRd', domain = zones$M7Dis, bins = m7.bins, reverse=FALSE)
+m7.dis.bins <- seq(min(na.omit(zones$M7Dis)),max(na.omit(zones$M7Dis)),by=(max(na.omit(zones$M7Dis)) - min(na.omit(zones$M7Dis)))/7)
+m7.dis.pal <- colorBin('YlOrRd', domain = zones$M7Dis, bins = m7.dis.bins, reverse=FALSE)
 ```
 
 ```{r prepare_labels_and_map}
@@ -106,17 +109,22 @@ m4.int.labels <- sprintf(
   zones$Name, zones$M4ZxD
 ) %>% lapply(HTML)
 
-m5.labels <- sprintf(
+m5.int.labels <- sprintf(
+  "<strong>%s</strong><br/>Model C (OLS by Regimes) Intercept Coefficient:  %g",
+  zones$Name, zones$M5Int
+) %>% lapply(HTML)
+
+m5.dis.labels <- sprintf(
   "<strong>%s</strong><br/>Model C (OLS by Regimes) Disadvantage Coefficient:  %g",
   zones$Name, zones$M5Dis
 ) %>% lapply(HTML)
 
-m6.labels <- sprintf(
+m6.dis.labels <- sprintf(
   "<strong>%s</strong><br/>Model D (Spatial Lag by Regimes) Disadvantage Coefficient:  %g",
   zones$Name, zones$M6Dis
 ) %>% lapply(HTML)
 
-m7.labels <- sprintf(
+m7.dis.labels <- sprintf(
   "<strong>%s</strong><br/>Model E (Spatial Error by Regimes) Disadvantage Coefficient:  %g",
   zones$Name, zones$M7Dis
 ) %>% lapply(HTML)
@@ -264,35 +272,54 @@ For tracts in regions 2, 3, 5, and 6, disadvantage is associated with high level
 The results indicate that no matter the climate, disadvantage is positively related to violent crime, though the size of the effect varies by climate region.
 </font></p>
 
-### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
-<p align=center><font size=3>
-Figure 7. Model C, OLS by climate regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
+### Model C: OLS by Climate Regions (Intercept) {data-commentary-width=450}
+
 ```{r frame7}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
-                                                            fillColor = ~m5.pal(zones$M5Dis),
+                                                            fillColor = ~m5.int.pal(zones$M5Int),
                                                             highlight = hopts,
-                                                            label = m5.labels,
+                                                            label = m5.int.labels,
                                                             labelOptions = lopts) %>%
-                                                addLegend(pal=m5.pal, values=~zones$M5Dis, opacity = 0.7, title = NULL,position='bottomright')
+                                                addLegend(pal=m5.int.pal, values=~zones$M5Dis, opacity = 0.7, title = NULL,position='bottomright')
+```
+
+***
+
+
+
+
+
+
+
+### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
+<p align=center><font size=3>
+Figure 8. Model C, OLS by climate regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
+```{r frame8}
+zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m5.dis.pal(zones$M5Dis),
+                                                            highlight = hopts,
+                                                            label = m5.dis.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m5.dis.pal, values=~zones$M5Dis, opacity = 0.7, title = NULL,position='bottomright')
 ```
 </p>
 *** 
 <p align=justify><font size=4>
 <b>For some Southern subregions, disadvantage is not associated with high levels of violence.</b><br><br>
 Model C controls for tract-level covariates, conducting fourteen region-specific OLS regressions. The model is correctly specified for three regions (8, 14, and 20); in the other regions, spatial lag, spatial error, or both are indicated.<br><br>
-Figure 7 shows that for the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
+Figure 8 shows that for the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
 </font></p>
 
 ### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
 <p align=center><font size=3>
-Figure 8. Model D, spatial lag by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
-```{r frame8}
+Figure 9. Model D, spatial lag by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
+```{r frame9}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
-                                                            fillColor = ~m6.pal(zones$M6Dis),
+                                                            fillColor = ~m6.dis.pal(zones$M6Dis),
                                                             highlight = hopts,
-                                                            label = m6.labels,
+                                                            label = m6.dis.labels,
                                                             labelOptions = lopts) %>%
-                                                addLegend(pal=m6.pal, values=~zones$M6Dis, opacity = 0.7, title = NULL,position='bottomright')
+                                                addLegend(pal=m6.dis.pal, values=~zones$M6Dis, opacity = 0.7, title = NULL,position='bottomright')
 ```
 </p>
 *** 
@@ -300,18 +327,18 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <b>The association between disadvantage and high violence is not confined to the South.</b><br><br>
 Model D controls for tract-level covariates and the spatial lag of tract-level violent crime rate.<br><br>
 The model is correctly specified for five regions (2, 3, 5, 7, and 18).<br><br>
-Figure 8 shows that BOOKMARK
+Figure 9 shows that BOOKMARK
 </font></p>
 
 ### Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=450}
 
-```{r frame9}
+```{r frame10}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
-                                                            fillColor = ~m7.pal(zones$M7Dis),
+                                                            fillColor = ~m7.dis.pal(zones$M7Dis),
                                                             highlight = hopts,
-                                                            label = m7.labels,
+                                                            label = m7.dis.labels,
                                                             labelOptions = lopts) %>%
-                                                addLegend(pal=m7.pal, values=~zones$M7Dis, opacity = 0.7, title = NULL,position='bottomright')
+                                                addLegend(pal=m7.dis.pal, values=~zones$M7Dis, opacity = 0.7, title = NULL,position='bottomright')
 ```
 
 *** 
