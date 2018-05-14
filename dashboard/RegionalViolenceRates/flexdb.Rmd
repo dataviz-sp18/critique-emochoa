@@ -23,7 +23,13 @@ counties <- readOGR('/Users/erin/Google Drive/School/Thesis/Climate change & wea
 zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_integer64_policy = TRUE)
 ```
 
-```{r prepare_components}
+```{r filter_spatial_models}
+zones$Coef5D[!zones$zone%in%c(8,14,20)] <- NA
+zones$Coef6D[!zones$zone%in%c(2,3,5,7,18)] <- NA
+zones$Coef7D[!zones$zone%in%c(1,6,7,10,11,12,13)] <- NA
+```
+
+```{r build_palettes}
 m0.bins = c(-Inf,-6.0,-1.5,-.0001,0.0001,1.5,6.0,Inf)
 m0.pal <- colorBin('RdBu', domain = zones$Coef0Z, bins = m0.bins, reverse=TRUE)
 
@@ -36,15 +42,17 @@ m4.pal.zone <- colorBin('RdBu', domain = zones$Coef4Z, bins = m4.bins.zone, reve
 m4.bins.int = c(-Inf,-.236,-.059,0,0.001,0.3,0.620,Inf)
 m4.pal.int <- colorBin('RdBu', domain = zones$Coef4Int, bins = m4.bins.int, reverse=TRUE)
   
-m5.bins <- seq(min(zones$Coef5D),max(zones$Coef5D),by=(max(zones$Coef5D) - min(zones$Coef5D))/7)
+m5.bins <- seq(min(na.omit(zones$Coef5D)),max(na.omit(zones$Coef5D)),by=(max(na.omit(zones$Coef5D)) - min(na.omit(zones$Coef5D)))/7)
 m5.pal <- colorBin('YlOrRd', domain = zones$Coef5D, bins = m5.bins, reverse=FALSE)
 
-m6.bins <- seq(min(zones$Coef6D),max(zones$Coef6D),by=(max(zones$Coef6D) - min(zones$Coef6D))/7)
+m6.bins <- seq(min(na.omit(zones$Coef6D)),max(na.omit(zones$Coef6D)),by=(max(na.omit(zones$Coef6D)) - min(na.omit(zones$Coef6D)))/7)
 m6.pal <- colorBin('YlOrRd', domain = zones$Coef6D, bins = m6.bins, reverse=FALSE)
 
-m7.bins <- seq(min(zones$Coef7D),max(zones$Coef7D),by=(max(zones$Coef7D) - min(zones$Coef7D))/7)
+m7.bins <- seq(min(na.omit(zones$Coef7D)),max(na.omit(zones$Coef7D)),by=(max(na.omit(zones$Coef7D)) - min(na.omit(zones$Coef7D)))/7)
 m7.pal <- colorBin('YlOrRd', domain = zones$Coef7D, bins = m7.bins, reverse=FALSE)
+```
 
+```{r prepare_labels_and_map}
 base.labels <- sprintf(
   "<strong>%s</strong><br/>",
   zones$Name
@@ -99,12 +107,6 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
                addLabelOnlyMarkers(lng = ~Lon, lat = ~Lat, label = ~as.character(zone),
                                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
                                                   style = list("font-size" = "14px")))
-```
-
-```{r filter_spatial_models}
-zones$Coef5D[!zones$zone%in%c(8,14,20)] <- NA
-zones$Coef6D[!zones$zone%in%c(2,3,5,7,18)] <- NA
-zones$Coef7D[!zones$zone%in%c(1,6,7,10,11,12,13)] <- NA
 ```
 
 ### Introduction {data-commentary-width=450}
@@ -209,8 +211,8 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <p align=justify><font size=4>
 <b>In the absence of disadvantage, tracts in some subregions of the South exhibit high levels of violence&mdash;but tracts in other subregions have lower violence rates.</b><br><br>
 Controlling for the interaction of climate region and disadvantage allows the measurement of the association between climate region and violence when disadvantage is equal to zero.<br><br>
-Figure 5 shows that the association between climate region and violence is very high for tracts in zone 18, the Lower South, but also for tracts in zone 5, the Pacific Northwest.<br><br>
-Furthermore, several Southern subregions have much lower violence rates under such conditions.<br><br>
+Figure 5 shows that climate is related to high levels of violence for tracts in zone 18, the Lower South, but also for tracts in zone 5, the Pacific Northwest.<br><br>
+Furthermore, tracts in several Southern subregions have much lower violence rates under such conditions.<br><br>
 Together, these findings call into question the existence of a Southern subculture of violence.
 </font></p>
 
