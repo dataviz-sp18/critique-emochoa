@@ -289,7 +289,8 @@ The results indicate that no matter the climate, disadvantage is positively rela
 </font></p>
 
 ### Model C: OLS by Climate Regions (Intercept) {data-commentary-width=450}
-
+<p align=center><font size=3>
+Figure 7. Model C, OLS by climate regions: Intercept, violent crime rate of the sampled tracts in each region.</font><br>
 ```{r frame7}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                             fillColor = ~m5.int.pal(zones$M5Int),
@@ -298,9 +299,13 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
                                                             labelOptions = lopts) %>%
                                                 addLegend(pal=m5.int.pal, values=~zones$M5Dis, opacity = 0.7, title = NULL,position='bottomright')
 ```
-
+</p>
 ***
-
+<p align=justify><font size=4>
+<b>The baseline level of violence varies by climate region.</b><br><br>
+Model C controls for tract-level covariates, conducting fourteen region-specific OLS regressions. The model is correctly specified for three regions (8, 14, and 20); in the other regions, spatial lag, spatial error, or both are indicated.<br><br>
+Figure 7 shows that when all the covariates are equal to zero, the baseline level of violent crime varies by region: the Southern Plains zone (20) has a much higher baseline violence rate than the Texas Coast (8) or the Gulf Coast (14).<br><br>
+</font></p>
 
 
 
@@ -322,7 +327,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 *** 
 <p align=justify><font size=4>
 <b>For some Southern subregions, disadvantage is not associated with high levels of violence.</b><br><br>
-Model C controls for tract-level covariates, conducting fourteen region-specific OLS regressions. The model is correctly specified for three regions (8, 14, and 20); in the other regions, spatial lag, spatial error, or both are indicated.<br><br>
+
 Figure 8 shows that for the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
 </font></p>
 
