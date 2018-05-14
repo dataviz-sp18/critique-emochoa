@@ -19,6 +19,7 @@ library(RColorBrewer)
 ```
 
 ```{r read_data, message=FALSE, warning=FALSE,echo=FALSE,include=FALSE}
+counties <- readOGR('/Users/erin/Google Drive/School/Thesis/Climate change & weather/Viz/HR90/hr90.shp')
 zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_integer64_policy = TRUE)
 ```
 
@@ -106,7 +107,21 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
 <p align=center><font size=3>
 Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
 (data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).</font><br>
-![](data/hr90_EBS_cropped.png){width=1000px}
+```{r frame1}
+#![](data/hr90_EBS_cropped.png){width=1000px}
+hr90.colors <- c('darkturquoise','paleturquoise','#eafeff','#ffeaf0','pink','deeppink')
+hr90.bins <- c(-Inf,-8.300e-6,5.304e-5,7.331e-5,9.394e-5,1.553e-4,Inf)
+
+hr90.pal <- colorBin(hr90.colors, domain = counties$EBS_HR90, bins = hr90.bins)
+
+leaflet(counties,option=leafletOptions(zoomControl=TRUE,minZoom=4, maxZoom=7)) %>% 
+        addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+        addPolygons(fillColor = ~hr90.pal(counties$EBS_HR90),weight = .25,
+                    opacity = .5,color = 'black',fillOpacity = 1) %>%
+        addLegend(colors=hr90.colors, values=~counties$EBS_HR90, opacity = 1, title = NULL,position='bottomright',
+                  labels=c('-Inf - -8.300e-63','-8.300e-6 - 5.304e-5','5.304e-5 - 7.331e-5','7.331e-5 - 9.394e-5',
+                           '9.394e-5 - 1.553e-4','1.553e-45 - Inf'))
+```
 </p>
 
 *** 
