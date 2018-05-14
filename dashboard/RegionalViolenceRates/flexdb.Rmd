@@ -37,13 +37,13 @@ m4.bins.int = c(-Inf,-.236,-.059,0,0.001,0.3,0.620,Inf)
 m4.pal.int <- colorBin('RdBu', domain = zones$Coef4Int, bins = m4.bins.int, reverse=TRUE)
   
 m5.bins <- seq(min(zones$Coef5D),max(zones$Coef5D),by=(max(zones$Coef5D) - min(zones$Coef5D))/7)
-m5.pal <- colorBin('YlOrRd', domain = zones$Coef5D, bins = m5.bins, reverse=TRUE)
+m5.pal <- colorBin('YlOrRd', domain = zones$Coef5D, bins = m5.bins, reverse=FALSE)
 
 m6.bins <- seq(min(zones$Coef6D),max(zones$Coef6D),by=(max(zones$Coef6D) - min(zones$Coef6D))/7)
-m6.pal <- colorBin('YlOrRd', domain = zones$Coef6D, bins = m6.bins, reverse=TRUE)
+m6.pal <- colorBin('YlOrRd', domain = zones$Coef6D, bins = m6.bins, reverse=FALSE)
 
 m7.bins <- seq(min(zones$Coef7D),max(zones$Coef7D),by=(max(zones$Coef7D) - min(zones$Coef7D))/7)
-m7.pal <- colorBin('YlOrRd', domain = zones$Coef7D, bins = m7.bins, reverse=TRUE)
+m7.pal <- colorBin('YlOrRd', domain = zones$Coef7D, bins = m7.bins, reverse=FALSE)
 
 base.labels <- sprintf(
   "<strong>%s</strong><br/>",
@@ -195,7 +195,8 @@ Together, these findings call into question the existence of a Southern subcultu
 </font></p>
 
 ### Model B: Climate Zone x Disadvantage {data-commentary-width=450}
-
+<p align=center><font size=3>
+Figure 6. Model B: Coefficient for the interaction between climate region and disadvantage, relative to region 1, for violent crime rate of the sampled tracts in each region.</font><br>
 ```{r frame6}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                                 fillColor = ~m4.pal.int(zones$Coef4Int),
@@ -207,7 +208,9 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 ***
 <p align=justify><font size=4>
-Climate moderates the relationship between disadvantage and violence.</b><br>
+<b>Climate moderates the relationship between disadvantage and violence.</b><br><br>
+<br><br>
+The results indicate that no matter the climate, disadvantage is positively related to violent crime, though the size of the effect varies by climate region.
 </font></p>
 
 ### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
