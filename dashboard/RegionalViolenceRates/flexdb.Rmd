@@ -52,9 +52,9 @@ zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_int
 ```
 
 ```{r filter_spatial_models}
-zones@data[!zones$zone%in%c(8,14,20),10:15] <- NA
-zones@data[!zones$zone%in%c(2,3,5,7,18),16:22] <- NA
-zones@data[!zones$zone%in%c(1,6,7,10,11,12,13),23:29] <- NA
+zones@data[!zones$zone%in%c(8,14,20),10:15] <- NA #Model 5
+zones@data[!zones$zone%in%c(2,3,5,7,18),16:22] <- NA #Model 6
+zones@data[!zones$zone%in%c(1,6,7,10,11,12,13),23:29] <- NA #Model 7
 ```
 
 ```{r build_palettes}
@@ -76,8 +76,14 @@ m5.int.pal <- colorBin('YlOrRd', domain = zones$M5Int, bins = m5.int.bins, rever
 m5.dis.bins <- seq(min(na.omit(zones$M5Dis)),max(na.omit(zones$M5Dis)),by=(max(na.omit(zones$M5Dis)) - min(na.omit(zones$M5Dis)))/7)
 m5.dis.pal <- colorBin('YlOrRd', domain = zones$M5Dis, bins = m5.dis.bins, reverse=FALSE)
 
+m6.int.bins <- seq(min(na.omit(zones$M6Int)),max(na.omit(zones$M6Int)),by=(max(na.omit(zones$M6Int)) - min(na.omit(zones$M6Int)))/7)
+m6.int.pal <- colorBin('YlOrRd', domain = zones$M6Int, bins = m6.int.bins, reverse=FALSE)
+
 m6.dis.bins <- seq(min(na.omit(zones$M6Dis)),max(na.omit(zones$M6Dis)),by=(max(na.omit(zones$M6Dis)) - min(na.omit(zones$M6Dis)))/7)
 m6.dis.pal <- colorBin('YlOrRd', domain = zones$M6Dis, bins = m6.dis.bins, reverse=FALSE)
+
+m7.int.bins <- seq(min(na.omit(zones$M7Int)),max(na.omit(zones$M7Int)),by=(max(na.omit(zones$M7Int)) - min(na.omit(zones$M7Int)))/7)
+m7.int.pal <- colorBin('YlOrRd', domain = zones$M7Int, bins = m7.int.bins, reverse=FALSE)
 
 m7.dis.bins <- seq(min(na.omit(zones$M7Dis)),max(na.omit(zones$M7Dis)),by=(max(na.omit(zones$M7Dis)) - min(na.omit(zones$M7Dis)))/7)
 m7.dis.pal <- colorBin('YlOrRd', domain = zones$M7Dis, bins = m7.dis.bins, reverse=FALSE)
@@ -119,9 +125,19 @@ m5.dis.labels <- sprintf(
   zones$Name, zones$M5Dis
 ) %>% lapply(HTML)
 
+m6.int.labels <- sprintf(
+  "<strong>%s</strong><br/>Model D (Spatial Lag by Regimes) Intercept Coefficient:  %g",
+  zones$Name, zones$M6Int
+) %>% lapply(HTML)
+
 m6.dis.labels <- sprintf(
   "<strong>%s</strong><br/>Model D (Spatial Lag by Regimes) Disadvantage Coefficient:  %g",
   zones$Name, zones$M6Dis
+) %>% lapply(HTML)
+
+m7.int.labels <- sprintf(
+  "<strong>%s</strong><br/>Model E (Spatial Error by Regimes) Intercept Coefficient:  %g",
+  zones$Name, zones$M7Int
 ) %>% lapply(HTML)
 
 m7.dis.labels <- sprintf(
@@ -310,10 +326,28 @@ Model C controls for tract-level covariates, conducting fourteen region-specific
 Figure 8 shows that for the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
 </font></p>
 
+### Model D: Spatial Lag by Regions (Intercept) {data-commentary-width=450}
+<p align=center><font size=3>
+Figure 9. </font><br>
+```{r frame9}
+zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m6.int.pal(zones$M6Int),
+                                                            highlight = hopts,
+                                                            label = m6.int.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m6.int.pal, values=~zones$M6Int, opacity = 0.7, title = NULL,position='bottomright')
+```
+</p>
+***
+<p align=justify><font size=4>
+<b></b><br><br>
+</font></p>
+
+
 ### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
 <p align=center><font size=3>
-Figure 9. Model D, spatial lag by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
-```{r frame9}
+Figure 10. Model D, spatial lag by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
+```{r frame10}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                             fillColor = ~m6.dis.pal(zones$M6Dis),
                                                             highlight = hopts,
@@ -327,12 +361,28 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <b>The association between disadvantage and high violence is not confined to the South.</b><br><br>
 Model D controls for tract-level covariates and the spatial lag of tract-level violent crime rate.<br><br>
 The model is correctly specified for five regions (2, 3, 5, 7, and 18).<br><br>
-Figure 9 shows that BOOKMARK
+Figure 10 shows that BOOKMARK
 </font></p>
+
+
+### Model E: Spatial Error by Regions (Intercept) {data-commentary-width=450}
+
+```{r frame11}
+zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
+                                                            fillColor = ~m7.int.pal(zones$M7Int),
+                                                            highlight = hopts,
+                                                            label = m7.int.labels,
+                                                            labelOptions = lopts) %>%
+                                                addLegend(pal=m7.int.pal, values=~zones$M7Int, opacity = 0.7, title = NULL,position='bottomright')
+```
+
+*** 
+
+Text
 
 ### Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=450}
 
-```{r frame10}
+```{r frame12}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
                                                             fillColor = ~m7.dis.pal(zones$M7Dis),
                                                             highlight = hopts,
