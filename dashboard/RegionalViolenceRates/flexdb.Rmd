@@ -146,8 +146,8 @@ m7.dis.labels <- sprintf(
 ) %>% lapply(HTML)
 
 hopts <- highlightOptions(weight = 4,
-                       color = "#555555",
-                       dashArray = "",
+                       color = "#000000",
+                       #dashArray = "",
                        fillOpacity = .6,
                        bringToFront = TRUE)
 
@@ -158,7 +158,7 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
                addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
                addLabelOnlyMarkers(lng = ~Lon, lat = ~Lat, label = ~as.character(zone),
                                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
-                                                  style = list("font-size" = "14px")))
+                                                  style = list("font-size" = "14px"))) 
 ```
 
 ### Introduction {data-commentary-width=450}

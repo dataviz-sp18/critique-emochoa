@@ -1,0 +1,86 @@
+---
+title: "flexdashboard: Shiny Embedding"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source_code: embed 
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+library(sp)
+library(rgdal)
+library(shiny)
+library(leaflet)
+library(flexdashboard)
+library(datasets)
+data(WorldPhones)
+
+counties <- readOGR('/Users/erin/Google Drive/School/Thesis/Climate change & weather/Viz/HR90/hr90.shp')
+zones <- readOGR('data/climatezones_aug.shp',layer='climatezones_aug', GDAL1_integer64_policy = TRUE)
+
+zones@data[!zones$zone%in%c(8,14,20),10:15] <- NA #Model 5
+zones@data[!zones$zone%in%c(2,3,5,7,18),16:22] <- NA #Model 6
+zones@data[!zones$zone%in%c(1,6,7,10,11,12,13),23:29] <- NA #Model 7
+
+m0.bins = c(-Inf,-6.0,-1.5,-.0001,0.0001,1.5,6.0,Inf)
+m0.pal <- colorBin('RdBu', domain = zones$M0Z, bins = m0.bins, reverse=TRUE)
+
+base.labels <- sprintf(
+  "<strong>%s</strong><br/>",
+  zones$Name
+) %>% lapply(HTML)
+
+hopts <- highlightOptions(weight = 4,
+                       color = "#555555",
+                       dashArray = "",
+                       fillOpacity = .6,
+                       bringToFront = TRUE)
+
+lopts <- labelOptions(style = list("font-weight" = "normal"),
+                      textsize = "15px",direction = "auto",opacity=1)
+
+zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, maxZoom=5)) %>%
+               addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+               addLabelOnlyMarkers(lng = ~Lon, lat = ~Lat, label = ~as.character(zone),
+                                     labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
+                                                  style = list("font-size" = "14px")))
+
+map.0 <- zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~Color,
+                                                               highlight = hopts,
+                                                               label = base.labels,
+                                                               labelOptions = lopts)
+
+```
+
+
+ShinyApp
+=======================================================================
+
+### It's an in-line app!
+
+
+```{r shinyapp}
+shinyApp(
+  ui = fillPage(
+    fillCol(flex = c(NA, 1), 
+      inputPanel(
+        #radioButtons('f5radio', label = h3('Choose Map'),
+         #                   choices = list('Coefficient: Climate Zone' = 1, 'Coefficient: Climate Zone x Disadvantage' = 2), 
+          #                  selected = 1)
+      ),
+      leafletOutput("map.0", height = "100%")
+      #conditionalPanel(condition = "input.f5radio == '1'",leafletOutput("map.0"))
+      #conditionalPanel(condition = "input.f5radio == '2'",leafletOutput("map.zones"))#,
+      
+      #conditionalPanel(condition = sprintf("input['%s'] == '1'", ns("f5radio")),leafletOutput(ns("map.zones"), height = "100%"))
+
+    )
+  ),
+  server = function(input, output) {
+    output$map.zones <- renderLeaflet({zones.map})
+    output$map.0 <- renderLeaflet({map.0})
+  },
+  options = list(height = 600)
+)
+```
