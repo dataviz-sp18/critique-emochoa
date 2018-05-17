@@ -147,7 +147,7 @@ m7.dis.labels <- sprintf(
 
 hopts <- highlightOptions(weight = 4,
                        color = "#000000",
-                       #dashArray = "",
+                       #dashArray = "", # This line breaks the polygons
                        fillOpacity = .6,
                        bringToFront = TRUE)
 
@@ -163,9 +163,7 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
 
 ### Introduction {data-commentary-width=450}
 
-<p align=center><font size=3>
-Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
-(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).</font><br>
+
 ```{r frame1}
 #![](data/hr90_EBS_cropped.png){width=1000px}
 hr90.colors <- c('darkturquoise','paleturquoise','#eafeff','#ffeaf0','pink','deeppink')
@@ -181,13 +179,31 @@ leaflet(counties,option=leafletOptions(zoomControl=TRUE,minZoom=4, maxZoom=7)) %
                   labels=c('-Inf - -8.300e-63','-8.300e-6 - 5.304e-5','5.304e-5 - 7.331e-5','7.331e-5 - 9.394e-5',
                            '9.394e-5 - 1.553e-4','1.553e-45 - Inf'))
 ```
-</p>
 
-*** 
+
+***
+<div>
 <p align=justify><font size=4>
 <b>Violence rates are higher in the South.</b><br><br>
 Historically, criminologists have turned to the idea of a <i>Southern subculture of violence</i> to explain this disparity.<br><br>
 But culture isn't the only factor that varies regionally: the <u>climate</u> does, too.</font></p>
+</div>
+
+<div style="position:absolute;width:430px;bottom:0;">
+<hr><br>
+<p align=justify><font size=3>
+Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
+(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).
+</font></p>
+</div>
+
+
+
+
+
+
+
+
 
 ### Climate Regions {data-commentary-width=450}
 <p align=center><font size=3>
