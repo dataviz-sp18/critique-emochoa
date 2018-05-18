@@ -277,8 +277,15 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <b>Controlling for theoretically and empirically indicated covariates changes the association between climate and violence.</b><br><br>
 Figure 4 shows the climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region after controlling for tract- and city-level covariates.<br><br>
 This shows that once such conditions are taken into account, there are tracts in areas of the South that have low levels of violence (like in regions 8, 10, and 14) and tracts in areas outside the South that have high levels of violence (like in regions 5 and 12).</font></p><br><br>
-<font size=3><u>Tract-level covariates</u>:<ul><li>Residential Instability</li><li>Immigrant Prevalence</li><li>Disadvantage</li><li>Males Aged 15&ndash;34</li><li>Percent Minority</li></ul>
-<u>City-level covariates</u>:<ul><li>Segregation</li><li>Disadvantage</li><li>Manufacturing Jobs</li><li>Population</li><li>Percent Minority</li><li>Percent Recent Movers</li><li>Percent Foreign-Born</li><li>Males Aged 15&ndash;34</li></ul>
+<table>
+<tr valign=top>
+<td width=225>
+<font size=3><u>Tract-level covariates</u>:<ul><li>Residential Instability</li><li>Immigrant Prevalence</li><li>Disadvantage</li><li>Males Aged 15&ndash;34</li><li>Percent Minority</li></ul></font>
+</td><td>
+<font size=3><u>City-level covariates</u>:<ul><li>Segregation</li><li>Disadvantage</li><li>Manufacturing Jobs</li><li>Population</li><li>Percent Minority</li><li>Percent Recent Movers</li><li>Percent Foreign-Born</li><li>Males Aged 15&ndash;34</li></ul></font>
+</td>
+<tr>
+</table>
 </font>
 </div>
 
@@ -522,5 +529,5 @@ The high violence rate of tracts located in the Florida Peninsula zone (6) is as
 <div style="position:absolute;width:430px;bottom:0;">
 <hr><br>
 <p align=justify><font size=3>
-Figure 11. Model E, spatial error by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
+Figure 12. Model E, spatial error by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
 </div>
