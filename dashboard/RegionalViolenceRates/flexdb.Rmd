@@ -161,7 +161,7 @@ zones.map <- leaflet(zones,option=leafletOptions(zoomControl=TRUE,minZoom=4, max
                                                   style = list("font-size" = "14px"))) 
 ```
 
-### Introduction {data-commentary-width=450}
+### 1. Introduction {data-commentary-width=450}
 
 
 ```{r frame1}
@@ -192,8 +192,9 @@ But culture isn't the only factor that varies regionally: the <u>climate</u> doe
 <div style="position:absolute;width:430px;bottom:0;">
 <hr><br>
 <p align=justify><font size=3>
-Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Bayes smoothing
-(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>).
+Figure 1. Average yearly homicide rate per 100,000 by county, 1989&ndash;1991 
+(data from <a href=https://geodacenter.github.io/data-and-lab/ncovr>Anselin 2003</a>) 
+with Empirical Bayes smoothing; box map (hinge = 1.5<i>IQR</i>).
 </font></p>
 </div>
 
@@ -205,7 +206,8 @@ Figure 1. Homicide rate per 100,000 persons by county, 1990, with Empirical Baye
 
 
 
-### Climate Regions {data-commentary-width=450}
+### 2. Climate Regions {data-commentary-width=450}
+
 ```{r frame2}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~Color,
                                                                highlight = hopts,
@@ -230,7 +232,7 @@ Figure 2. Climate regions where sampled tracts are located.</font><br>
 </p>
 </div>
 
-### Raw Violence Rates {data-commentary-width=450}
+### 3. Raw Violence Rates {data-commentary-width=450}
 
 ```{r frame3}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m0.pal(zones$M0Z),
@@ -248,7 +250,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 Figure 3 shows the climate-region coefficient, relative to region 1 (Great Lakes, in white), for the violent crime rate of the sampled tracts in each region.<br><br>
 Note that tracts in some Southern regions (like 6, 11, and 18) have higher violence rates on average than tracts in the Great Lakes region, but tracts in other Southern regions (like 8, 10, and 14) have lower violence rates.<br><br>
 This shows that the South is <u>not homogeneous</u>: there is variability across climate regions within the South.<br><br>
-Also note that tracts in region 3 have higher violence rates on average than those in the Great Lakes region. 
+Also note that tracts in region 3 have higher violence rates on average than those in the Great Lakes region and in the Florida Peninsula region (6). 
 </font></p>
 </div>
 
@@ -259,7 +261,7 @@ Figure 3. Climate-region coefficient, relative to region 1 (Great Lakes), for vi
 </p>
 </div>
 
-### Model A: Climate Zone {data-commentary-width=450}
+### 4. Model A: Climate Zone {data-commentary-width=450}
 
 ```{r frame4}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6, fillColor = ~m3.pal(zones$M3Z),
@@ -274,10 +276,10 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <p align=justify><font size=4>
 <b>Controlling for theoretically and empirically indicated covariates changes the association between climate and violence.</b><br><br>
 Figure 4 shows the climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region after controlling for tract- and city-level covariates.<br><br>
-This shows that once such conditions are taken into account, there are tracts in areas of the South that have low levels of violence (like in regions 8, 10, and 14) and tracts in areas outside the South that have high levels of violence (like in regions 5 and 12).<br><br>
-<u>Tract-level covariates</u>:<ul><li>Residential Instability</li> <li>Immigrant Prevalence</li> <li>Disadvantage</li> <li>Males Aged 15&ndash;34</li> <li>Percent Minority</li></ul>
+This shows that once such conditions are taken into account, there are tracts in areas of the South that have low levels of violence (like in regions 8, 10, and 14) and tracts in areas outside the South that have high levels of violence (like in regions 5 and 12).</font></p><br><br>
+<font size=3><u>Tract-level covariates</u>:<ul><li>Residential Instability</li><li>Immigrant Prevalence</li><li>Disadvantage</li><li>Males Aged 15&ndash;34</li><li>Percent Minority</li></ul>
 <u>City-level covariates</u>:<ul><li>Segregation</li><li>Disadvantage</li><li>Manufacturing Jobs</li><li>Population</li><li>Percent Minority</li><li>Percent Recent Movers</li><li>Percent Foreign-Born</li><li>Males Aged 15&ndash;34</li></ul>
-</font></p>
+</font>
 </div>
 
 <div style="position:absolute;width:430px;bottom:0;">
@@ -286,7 +288,7 @@ This shows that once such conditions are taken into account, there are tracts in
 Figure 4. Model A: Climate-region coefficient, relative to region 1 (Great Lakes), for violent crime rate of the sampled tracts in each region.</font><br>
 </p>
 
-### Model B: Climate Zone<br>(when Disadvantage  = 0) {data-commentary-width=450}
+### 5. Model B: Climate Zone<br>(when Disadvantage  = 0) {data-commentary-width=450}
 
 ```{r frame5}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -315,7 +317,7 @@ Figure 5. Model B: Climate-region coefficient (when disadvantage = 0), relative 
 </p>
 </div>
 
-### Model B: Climate Zone x Disadvantage {data-commentary-width=450}
+### 6. Model B: Climate Zone x Disadvantage {data-commentary-width=450}
 
 ```{r frame6}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -344,7 +346,7 @@ Figure 6. Model B: Coefficient for the interaction between climate region and di
 </div>
 
 
-### Model C: OLS by Climate Regions (Intercept) {data-commentary-width=450}
+### 7. Model C: OLS by Climate Regions (Intercept) {data-commentary-width=450}
 
 ```{r frame7}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -358,7 +360,7 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 ***
 <div>
 <p align=justify><font size=4>
-<b>The baseline level of violence varies by climate region.</b><br><br>
+<b>Under a non-spatial regimes model, the baseline level of violence varies by climate region.</b><br><br>
 Model C controls for tract-level covariates, conducting fourteen region-specific OLS regressions. The model is correctly specified for three regions (8, 14, and 20); in the other regions, spatial lag, spatial error, or both are indicated.<br><br>
 Figure 7 shows that when all the covariates are equal to zero, the baseline level of violent crime varies by region: the Southern Plains zone (20) has a much higher baseline violence rate than the Texas Coast (8) or the Gulf Coast (14).<br><br>
 </font></p>
@@ -375,7 +377,7 @@ Figure 7. Model C, OLS by climate regions: Intercept, violent crime rate of the 
 
 
 
-### Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
+### 8. Model C: OLS by Climate Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame8}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -389,9 +391,10 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 ***
 <div>
 <p align=justify><font size=4>
-<b>For some Southern subregions, disadvantage is not associated with high levels of violence.</b><br><br>
+<b>Under a non-spatial regimes model, disadvantage is not associated with high levels of violence for tracts in some Southern subregions.</b><br><br>
 
-Figure 8 shows that for the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
+Figure 8 shows that for tracts in the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
+In the sampled tracts in the Gulf Coast zone (14), violence is low and not driven by disadvantage.
 </font></p>
 </div>
 
@@ -402,7 +405,7 @@ Figure 8. Model C, OLS by climate regions: Disadvantage coefficient, violent cri
 </p>
 </div>
 
-### Model D: Spatial Lag by Regions (Intercept) {data-commentary-width=450}
+### 9. Model D: Spatial Lag by Regions (Intercept) {data-commentary-width=450}
 
 ```{r frame9}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -416,18 +419,21 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 ***
 <div>
 <p align=justify><font size=4>
-<b></b><br><br>
+<b>Under a spatial lag model, the baseline level of violence varies by climate region.</b><br><br>
+Model D controls for tract-level covariates and the spatial lag of tract-level violent crime rate.<br><br>
+Figure 9 shows that for regions where this model is the correct specification, the baseline level of violence varies by climate region: when all covariates are equal to zero, the violent crime level of tracts in the Lower South zone (18) is much higher than that of tracts in the other regions.<br><br>
+Interestingly, the baseline violence rate for tracts in the Pacific Northwest (5) is higher than that of tracts in the Central Snake (2) and Midwest (3).
 </font></p>
 </div>
 
 <div style="position:absolute;width:430px;bottom:0;">
 <hr><br>
 <p align=justify><font size=3>
-Figure 9. </font><br>
+Figure 9. Model D, spatial lag by climate regions: Intercept, violent crime rate of the sampled tracts in each region.</font><br>
 </p>
 </div>
 
-### Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
+### 10. Model D: Spatial Lag by Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame10}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -441,10 +447,8 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 ***
 <div>
 <p align=justify><font size=4>
-<b>The association between disadvantage and high violence is not confined to the South.</b><br><br>
-Model D controls for tract-level covariates and the spatial lag of tract-level violent crime rate.<br><br>
-The model is correctly specified for five regions (2, 3, 5, 7, and 18).<br><br>
-Figure 10 shows that BOOKMARK
+<b>Under a spatial lag model, the association between disadvantage and violence is not confined to the South, though it is strongest in the Lower South.</b><br><br>
+Figure 10 shows that violence in tracts in the Lower South (18) is driven by disadvantage, but this is also true, though to a lesser extent, for tracts in regions 2, 3, and 5.
 </font></p>
 </div>
 
@@ -456,7 +460,7 @@ Figure 10. Model D, spatial lag by regions: Disadvantage coefficient, violent cr
 </div>
 
 
-### Model E: Spatial Error by Regions (Intercept) {data-commentary-width=450}
+### 11. Model E: Spatial Error by Regions (Intercept) {data-commentary-width=450}
 
 ```{r frame11}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -470,17 +474,21 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 
 *** 
 <div>
-
-Text
+<p align=justify><font size=4>
+<b>Under a spatial error model, the baseline level of violence varies by climate region.</b><br><br>
+Model E is a spatial error by regimes model that controls for tract-level covariates. The error term is significant for all regions, indicating that there are important unidentified covariates missing from the model.<br><br>
+Figure 11 shows that though tracts in the Florida Peninsula (6) have the highest baseline level of violent crime, tracts in the Northern Plains (13) also have a high baseline violence level.
+</font></p>
 </div>
 
 <div style="position:absolute;width:430px;bottom:0;">
 <hr><br>
 <p align=justify><font size=3>
+Figure 11. Model E, spatial error by region: Intercept, violent crime rate of the sampled tracts in each region.
 </font></p>
 </div>
 
-### Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=450}
+### 12. Model E: Spatial Error by Regions (Disadvantage) {data-commentary-width=450}
 
 ```{r frame12}
 zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,fillOpacity = 0.6,
@@ -494,12 +502,25 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 *** 
 
 <div>
+<p align=justify><font size=4>
+<b>Under a spatial error model, violent crime of tracts in the Florida Peninsula is driven by disadvantage.</b><br><br>
+The high violence rate of tracts located in the Florida Peninsula zone (6) is associated with disadvantage, while the lower yet still high rates of tracts in regions 7, 10, and 13 are not associated with disadvantage.
+</font></p>
+</div>
 
-Text
+<div>
+<p align=justify><font size=4>
+<br><br><br>
+<b>Conclusions</b>
+<ul>
+<li>Violence rate varies by climate region.</li>
+<li>Climate moderates the relationship between disadvantage and violence.</li>
+<li>Violence in some Southern subregions is driven by disadvantage, but not so in others.</li>
+</ul>
 </div>
 
 <div style="position:absolute;width:430px;bottom:0;">
 <hr><br>
 <p align=justify><font size=3>
-</font></p>
+Figure 11. Model E, spatial error by regions: Disadvantage coefficient, violent crime rate of the sampled tracts in each region.</font><br>
 </div>
