@@ -399,7 +399,6 @@ zones.map %>% addPolygons(weight = 1, color = '#000000',opacity = 1.0,fill=TRUE,
 <div>
 <p align=justify><font size=4>
 <b>Under a non-spatial regimes model, disadvantage is not associated with high levels of violence for tracts in some Southern subregions.</b><br><br>
-
 Figure 8 shows that for tracts in the regions where non-spatial OLS is the correct specification, the role of disadvantage varies by climate region.<br><br>
 In the sampled tracts in the Gulf Coast zone (14), violence is low and not driven by disadvantage.
 </font></p>
